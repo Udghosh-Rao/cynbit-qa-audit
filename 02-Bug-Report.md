@@ -20,7 +20,7 @@ Environment IDs (E1–E4) refer to the matrix in [01 — QA Audit Report §3](01
 | [BUG-11](#bug-11) | Icon ligature names are read aloud ("west Previous Page", "Companyexpand_more") | Accessibility | Medium | P2 | All |
 | [BUG-13](#bug-13) | Hero content is served with `opacity:0` and stays invisible until JS runs | Performance / UX | Medium | P2 | All |
 | [SEO-01](#seo-01) | 23 pages use the homepage `<title>` (all case studies and diaries) | SEO | Medium | P2 | E4 |
-| [SEO-02](#seo-02) | No `rel=canonical`; apex→www is a 307; sitemap and OG point to the redirecting host | SEO | Medium | P2 | E4 |
+| [SEO-02](#seo-02) | `rel=canonical` missing on 81 of 82 pages; apex→www is a 307; sitemap and OG point to the redirecting host | SEO | Medium | P2 | E4 |
 | [PERF-01](#perf-01) | 1.1 MB icon font (full Material Symbols variable font) loaded on every page | Performance | Medium | P2 | All |
 | [SEC-01](#sec-01) | Missing security headers (CSP, frame-ancestors / XFO, nosniff, Referrer-Policy, Permissions-Policy) | Security | Medium | P2 | E4 |
 | [SEC-03](#sec-03) | Google Analytics cookies set before consent; no consent banner | Privacy / Compliance | Medium | P2 | All |
@@ -74,7 +74,7 @@ Environment IDs (E1–E4) refer to the matrix in [01 — QA Audit Report §3](01
 |---|---|
 | Severity / Priority | High / P1 |
 | Environment | All |
-| Scope | 20 of 25 posts; 184 anchor links. Full list from `scripts/crawl_check.sh` |
+| Scope | 20 of 25 posts; 190 anchor links. Full list from `scripts/crawl_check.sh` |
 
 **Steps to reproduce**
 1. Open `https://www.cynbit.in/blog/ai-lead-generation`.
@@ -161,7 +161,7 @@ Environment IDs (E1–E4) refer to the matrix in [01 — QA Audit Report §3](01
 
 ### SEO-02
 **No canonical; temporary apex redirect; sitemap points to the redirecting host**
-* None of the 90 pages has `<link rel="canonical">`.
+* 81 of 82 sitemap pages have no `<link rel="canonical">`. The one exception, `/bitelevate`, points its canonical at the apex host (`https://cynbit.in/bitelevate`), which redirects.
 * `https://cynbit.in/` → `https://www.cynbit.in/` returns **307 Temporary**, which tells search engines the apex is still the primary host.
 * `sitemap.xml`, the `Sitemap:` line in `robots.txt`, and `og:url` all use `https://cynbit.in/...`, so every URL submitted to search engines goes through a redirect.
 * **Fix:** Pick one host (www). Make the apex redirect a 308 or 301. Emit `alternates.canonical` and set `metadataBase` to `https://www.cynbit.in`. Regenerate the sitemap with www URLs.

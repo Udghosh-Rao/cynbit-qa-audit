@@ -22,10 +22,10 @@ QA Testing Intern technical assessment for Cynbit Technologies.
 
 **Top issues**
 1. **BUG-01:** The mobile hamburger menu can't be closed, because the overlay hides its own close button.
-2. **BUG-02:** Table-of-Contents links are dead on all 20 long-form blog posts (184 anchors).
+2. **BUG-02:** Table-of-Contents links are dead on all 20 long-form blog posts (190 anchors).
 3. **BUG-03:** On mobile, the footer's Terms, Cookies, and copyright row is permanently under the fixed bottom nav.
 4. **SEC-01 / SEC-03:** No CSP or anti-clickjacking headers; Google Analytics cookies are set before consent.
-5. **SEO-01 / SEO-02:** 23 pages share the homepage title; no canonical tags; the sitemap lists redirecting URLs.
+5. **SEO-01 / SEO-02:** 23 pages share the homepage title; canonical tags on only 1 of 82 pages; the sitemap lists redirecting URLs.
 
 ## Reproducing the automated checks
 

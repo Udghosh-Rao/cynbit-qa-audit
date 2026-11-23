@@ -18,10 +18,10 @@ I tested 82 sitemap URLs and 8 more pages found by crawling. The work combined H
 The site is in good overall health. Every sitemap URL returns `200`, HTTPS and HSTS are enforced, there is a proper custom 404 page, every image has `alt` text, and no console errors appeared. However, I found **31 issues**: 3 High, 12 Medium, 13 Low, and 3 Informational. The highest-impact ones are:
 
 1. **Mobile menu traps the user** (BUG-01). Once the hamburger menu opens, its full-screen overlay covers the header's close (X) button, and Escape doesn't close it either.
-2. **The Table of Contents is dead on all 20 long-form blog posts** (BUG-02). That's 184 anchor links pointing at headings that have no `id`.
+2. **The Table of Contents is dead on all 20 long-form blog posts** (BUG-02). That's 190 anchor links pointing at headings that have no `id`.
 3. **Mobile footer legal links are unreachable** (BUG-03). Terms, Cookies, Navigation, and the copyright notice sit permanently under the fixed bottom navigation bar.
 4. **Missing security headers and pre-consent analytics cookies** (SEC-01, SEC-03): no CSP or anti-clickjacking header, and GA4 cookies are set before any consent is given.
-5. **SEO metadata gaps** (SEO-01, SEO-02): 23 pages share the homepage `<title>`, there is no `rel=canonical` anywhere, and the sitemap lists the non-canonical apex host.
+5. **SEO metadata gaps** (SEO-01, SEO-02): 23 pages share the homepage `<title>`, there is `rel=canonical` on only 1 of 82 sitemap pages, and the sitemap lists the non-canonical apex host.
 
 | Severity | Count | Meaning |
 |---|---|---|
@@ -74,13 +74,13 @@ I used a hybrid approach: automated breadth first, then manual depth.
 | Phase | Technique | What it produced |
 |---|---|---|
 | 1. Discovery | Parsed `robots.txt` and `sitemap.xml`, then crawled every sitemap page and extracted all `href`s | Inventory of 82 sitemap URLs plus 100 unique internal links |
-| 2. Link and status integrity | Sent a `curl` request to every internal URL and asset; checked in-page `#anchor` targets against element `id`s | 1 broken internal link (BUG-04) and 184 dead TOC anchors (BUG-02) |
+| 2. Link and status integrity | Sent a `curl` request to every internal URL and asset; checked in-page `#anchor` targets against element `id`s | 1 broken internal link (BUG-04) and 190 dead TOC anchors (BUG-02) |
 | 3. Boundary and negative testing | Fed edge values into query params: `?page=0,-1,99,abc`, unknown `?category=`, and unknown routes | Pagination off-by-one (BUG-05) and soft-404 behaviour (BUG-06) |
 | 4. Exploratory UI testing | Session-based manual testing of navigation, menus, modal, forms, filters, and the 404 page at E1–E3 | BUG-01, BUG-03, BUG-07, BUG-13, BUG-15 |
 | 5. Responsive testing | Checked each viewport for horizontal overflow (`scrollWidth` vs `clientWidth`), clipped elements, fixed-element overlap, and touch target size | BUG-03, BUG-15 |
 | 6. Accessibility | Keyboard-only traversal; console audit for label association, accessible names, roles, `aria-expanded`, heading order, skip link, alt text, and duplicate IDs | BUG-07, BUG-08, BUG-11, BUG-12, BUG-14 |
 | 7. Performance | Navigation Timing API, resource weights, SSR HTML inspection for render-blocking or hidden content | PERF-01, BUG-13 |
-| 8. SEO and metadata | Unique `<title>` and description per page, canonical, OG/Twitter tags, sitemap coverage, redirect type | SEO-01 to SEO-06 |
+| 8. SEO and metadata | Unique `<title>` and description per page, canonical, OG/Twitter tags, sitemap coverage, redirect type | SEO-01 to SEO-07 |
 | 9. Security and privacy (passive) | Response headers, CORS, cookies before consent, form `method`/`action`, `security.txt` | SEC-01 to SEC-05 |
 
 The scripts I used are in [`scripts/`](scripts/) so every automated finding can be reproduced:
@@ -96,13 +96,13 @@ The scripts I used are in [`scripts/`](scripts/) so every automated finding can 
 |---|---|---|---|
 | URL availability (sitemap) | 82 | 82 | 0 |
 | Internal link integrity | 100 unique links | 99 | 1 |
-| In-page anchor links (blog TOC) | 184 | 0 | 184 |
+| In-page anchor links (blog TOC) | 190 | 0 | 190 |
 | Navigation components (header, mega-menu, hamburger, bottom bar, footer) | 5 | 2 | 3 |
 | Forms (newsletter, contact, job application) | 3 forms / 28 fields | Validation fires on all three | Labelling, input types, GET fallback |
 | Responsive (3 viewports × 8 key pages) | 24 | 21 | 3 |
 | Accessibility spot checks | 12 criteria | 7 | 5 |
 | Security headers | 7 headers | 1 (HSTS) | 6 |
-| SEO metadata (90 pages) | Title uniqueness, canonical, OG | 67 unique titles | 23 duplicates, 0 canonicals |
+| SEO metadata (90 pages) | Title uniqueness, canonical, OG | 67 pages with a unique title | 23 duplicates; 81 of 82 sitemap pages lack a canonical |
 
 ### What works well
 

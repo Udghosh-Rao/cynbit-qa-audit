@@ -63,7 +63,7 @@ echo; echo "== Security headers on $BASE/ =="
 h=$(fetch -I "$BASE/")
 for k in strict-transport-security content-security-policy x-frame-options \
          x-content-type-options referrer-policy permissions-policy access-control-allow-origin; do
-  v=$(echo "$h" | grep -i "^$k:" | cut -d' ' -f2- | tr -d '\r')
+  v=$(echo "$h" | grep -i "^$k:" | cut -d' ' -f2- | tr -d '\r' || true)
   printf '  %-28s %s\n' "$k" "${v:-MISSING}"
 done
 

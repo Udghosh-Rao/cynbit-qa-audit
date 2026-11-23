@@ -7,7 +7,7 @@ These are prioritised by **user impact × effort**. Effort estimates assume one 
 | # | Action | Fixes | Effort | Why first |
 |---|---|---|---|---|
 | 1 | Make the mobile menu closable: put a close button inside the overlay (or lift the header above it), add an Escape handler, lock body scroll, set `aria-expanded` on the toggle | BUG-01 | 1–2 h | Every mobile visitor who opens the menu gets stuck |
-| 2 | Add `id`s to blog headings (for example `rehype-slug`) plus `scroll-margin-top` | BUG-02 | 1 h | 184 dead links across all long-form content |
+| 2 | Add `id`s to blog headings (for example `rehype-slug`) plus `scroll-margin-top` | BUG-02 | 1 h | 190 dead links across all long-form content |
 | 3 | Reserve space below the footer for the bottom tab bar: `padding-bottom: calc(110px + env(safe-area-inset-bottom))` under `xl` | BUG-03 | 15 min | Legal links have to be reachable |
 | 4 | Fix the broken related-post link and add a 308 redirect from the old slug | BUG-04 | 15 min | Visible 404 inside the site's own content |
 
