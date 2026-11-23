@@ -1,0 +1,32 @@
+ID,Title,Category,Severity,Priority,Environment,URL,Expected,Actual,Evidence
+BUG-01,Mobile menu cannot be closed - overlay covers close button; Escape does nothing,Functional/Responsive,High,P1,Mobile 375x812,https://www.cynbit.in/services,Tapping X or pressing Escape closes the menu,Overlay (z-90) paints above header; X unreachable; no Escape handler; body scroll not locked,evidence/02b-mobile-menu-open-no-close-button.jpg
+BUG-02,Table of Contents links do nothing on all 20 long-form blog posts,Functional,High,P1,All,https://www.cynbit.in/blog/ai-lead-generation,Clicking a TOC item scrolls to the section,184 anchors point to ids that do not exist (h2 elements have no id),scripts/crawl_check.sh
+BUG-03,Mobile footer bottom row hidden under fixed bottom nav,Responsive,High,P1,Mobile 375x812,https://www.cynbit.in/,Terms/Cookies/Navigation/copyright visible at bottom of page,Row at y=779-794 sits under fixed nav (y=704-812); no bottom padding,evidence/03-mobile-footer-under-bottom-nav.jpg
+BUG-04,Broken internal link /blog/ai-agents-transforming-business,Broken element,Medium,P1,All,https://www.cynbit.in/blog/ai-chatbots-vs-human-support,Link opens an article,HTTP 404; linked from 4 posts,
+BUG-05,Blog Previous Page on page 1 links to ?page=0 (empty state),Functional,Medium,P2,All,https://www.cynbit.in/blog,Prev disabled on page 1,Active link to /blog?page=0 showing No insights found,evidence/04-blog-page-0-empty.jpg
+BUG-07,Newsletter pop-up not an accessible dialog; Escape does not close,Usability/A11y,Medium,P2,All,https://www.cynbit.in/,role=dialog; focus moved in; Escape closes,No role/aria-modal; focus on body; Escape ignored; input unlabeled; auto-opens after ~3s,evidence/01-newsletter-modal-autopopup.jpg
+BUG-08,Form fields lack programmatically associated labels (27 fields),Accessibility,Medium,P2,All,https://www.cynbit.in/contact,label[for] or wrapping label,input.labels.length === 0 on contact (5) and application (22) fields,
+BUG-09,Application form: phone fields type=text; 8 unnamed fields; DOB/gender/address required,Usability,Medium,P2,All,https://www.cynbit.in/careers/qa-testing-intern,tel inputs; named fields; minimal required data,type=text for phone/whatsapp; 8 fields without name; 21/23 required; no maxLength,
+BUG-11,Icon ligature names exposed to screen readers; no aria-expanded,Accessibility,Medium,P2,All,https://www.cynbit.in/blog,Icons aria-hidden; clean accessible names,"Names like 'west Previous Page', 'Companyexpand_more', 'close'",
+BUG-13,Hero served with opacity:0 - invisible until JS hydrates,Performance/UX,Medium,P2,All,https://www.cynbit.in/,Hero visible at first paint,SSR style=opacity:0; visible ~1.3s after nav (FCP ~0.7s); blank if JS slow/fails,evidence/05-hero-invisible-before-hydration.jpg
+SEO-01,23 pages reuse the homepage <title> (case studies + diaries),SEO,Medium,P2,HTTP,https://www.cynbit.in/case-studies/retail-seo-growth,Unique title/description per page,Generic homepage title and description,
+SEO-02,No rel=canonical; apex 307 redirect; sitemap/OG on non-canonical host,SEO,Medium,P2,HTTP,https://cynbit.in/,Canonical on every page; 301/308 to www; www URLs in sitemap,0/90 canonicals; 307 Temporary; sitemap uses apex,
+PERF-01,1.1 MB Material Symbols variable font on every page,Performance,Medium,P2,All,https://www.cynbit.in/,Subset icon font < 50 KB or SVG icons,"1,145,372 bytes; ligature text flashes before load",
+SEC-01,Missing CSP / X-Frame-Options / nosniff / Referrer-Policy / Permissions-Policy,Security,Medium,P2,HTTP,https://www.cynbit.in/,Standard security headers present,Only HSTS present (no includeSubDomains/preload),
+SEC-03,GA4 cookies set before consent; no consent banner,Privacy/Compliance,Medium,P2,All,https://www.cynbit.in/,Analytics only after opt-in,_ga, _ga_LK6CQWCWX0 and _gcl_au (Google Ads) set on first load,
+BUG-06,Invalid ?page=/?category= values return HTTP 200 (soft 404),Functional,Low,P3,All,https://www.cynbit.in/blog?page=99,404 or redirect to page 1,200 with empty state,
+BUG-10,Blog filter chips cover 5 of 13 post categories,Usability,Low,P3,All,https://www.cynbit.in/blog,All categories filterable,AI Agents/AI Automation/etc. have no chip,
+BUG-12,No skip link; heading levels skip h2->h4,Accessibility,Low,P3,All,https://www.cynbit.in/,Skip link; sequential headings,Missing skip link; skipped levels,
+BUG-14,Hero h1 accessible text lacks a space ('withSaaS'),Accessibility,Low,P3,All,https://www.cynbit.in/,'with SaaS platforms','withSaaS platforms',
+BUG-15,Hero floating card clipped at right edge around 1024px,Responsive,Low,P3,Desktop 1024,https://www.cynbit.in/,Card fully inside viewport,Card cut off at right edge,evidence/06-hero-card-clipped-right-edge.jpg
+BUG-16,Team LinkedIn links open in same tab (inconsistent),Consistency,Low,P3,All,https://www.cynbit.in/team,Consistent external link behaviour,No target on LinkedIn links; footer social uses _blank,
+SEO-03,Brand duplicated in page titles,SEO,Low,P3,HTTP,https://www.cynbit.in/blog,Single brand suffix,'Insights & Ideas | Cynbit Technologies | Cynbit Technologies',
+SEO-04,8 diary entries missing from sitemap.xml,SEO,Low,P3,HTTP,https://www.cynbit.in/sitemap.xml,All indexable pages listed,/diaries/* entries absent,
+SEO-05,og:image/twitter:image is an SVG,SEO,Low,P3,HTTP,https://www.cynbit.in/,1200x630 PNG/JPG,https://cynbit.in/logo.svg,
+SEO-06,Category hrefs contain unencoded spaces,SEO/Standards,Low,P3,HTTP,https://www.cynbit.in/blog/ai-agents-business-operations,Encoded or slug URLs,href="/blog?category=AI Agents",
+SEO-07,404 page SSR title is the homepage title,SEO,Low,P3,HTTP,https://www.cynbit.in/blog/ai-agents-transforming-business,'Post Not Found' in SSR,Homepage title until JS runs,evidence/07-custom-404-page.jpg
+SEC-02,Access-Control-Allow-Origin: * on all HTML,Security,Low,P3,HTTP,https://www.cynbit.in/,No CORS header on HTML,ACAO: *,
+SEC-04,Forms default to method=GET with no action (PII in URL pre-hydration),Security/Privacy,Low,P3,All,https://www.cynbit.in/contact,method=post + action,method=get; no action,
+PERF-02,~217 KB JS across 16 chunks on homepage,Performance,Info,P3,HTTP,https://www.cynbit.in/,Lazy-load below-fold animation code,16 scripts ~217 KB decoded,
+PERF-03,Uncached /blog 1.64s and /careers 1.43s,Performance,Info,P3,HTTP,https://www.cynbit.in/blog,< 0.5s via ISR,1.64s / 1.43s on cache miss,evidence/sitemap-status-codes.txt
+SEC-05,No /.well-known/security.txt,Security,Info,P3,HTTP,https://www.cynbit.in/.well-known/security.txt,RFC 9116 file present,404,
