@@ -1,139 +1,116 @@
-# 01 — QA Audit Report: www.cynbit.in
+# QA Audit Report: www.cynbit.in
 
-| | |
-|---|---|
-| **Project** | Cynbit Technologies public website quality audit |
-| **Role** | QA Testing Intern technical assessment |
-| **Tester** | Udghosh Rao |
-| **Test window** | 23 Nov 2026 (IST) |
-| **Build under test** | Production, `https://www.cynbit.in` (Next.js on Vercel, edge `bom1`) |
-| **Companion docs** | [02 — Bug & Issue Report](02-Bug-Report.md) · [03 — Recommendations](03-Recommendations.md) · [bugs.csv](bugs.csv) |
+**Tester:** Udghosh Rao
+**Date:** 23 November 2026
+**Site:** https://www.cynbit.in (live production; built with Next.js and hosted on Vercel)
 
----
+The bug details are in [02-Bug-Report.md](02-Bug-Report.md) and my suggestions are in [03-Recommendations.md](03-Recommendations.md).
 
-## 1. Executive summary
+## Summary
 
-I tested 82 sitemap URLs and 8 more pages found by crawling. The work combined HTTP-level crawling, manual exploratory testing in a real Chromium browser, and DOM-level checks run in the browser console. I tested at three viewport classes: mobile, tablet, and desktop.
+Overall the site is in decent shape. Every page in the sitemap loads, HTTPS is enforced, the custom 404 page actually returns a 404, every image has alt text, and I didn't see any JavaScript errors in the console.
 
-The site is in good overall health. Every sitemap URL returns `200`, HTTPS and HSTS are enforced, there is a proper custom 404 page, every image has `alt` text, and no console errors appeared. However, I found **31 issues**: 3 High, 12 Medium, 13 Low, and 3 Informational. The highest-impact ones are:
+Still, I ended up with 31 issues:
 
-1. **Mobile menu traps the user** (BUG-01). Once the hamburger menu opens, its full-screen overlay covers the header's close (X) button, and Escape doesn't close it either.
-2. **The Table of Contents is dead on all 20 long-form blog posts** (BUG-02). That's 190 anchor links pointing at headings that have no `id`.
-3. **Mobile footer legal links are unreachable** (BUG-03). Terms, Cookies, Navigation, and the copyright notice sit permanently under the fixed bottom navigation bar.
-4. **Missing security headers and pre-consent analytics cookies** (SEC-01, SEC-03): no CSP or anti-clickjacking header, and GA4 cookies are set before any consent is given.
-5. **SEO metadata gaps** (SEO-01, SEO-02): 23 pages share the homepage `<title>`, there is `rel=canonical` on only 1 of 82 sitemap pages, and the sitemap lists the non-canonical apex host.
-
-| Severity | Count | Meaning |
+| Severity | Count | What I mean by it |
 |---|---|---|
-| High | 3 | Blocks or seriously degrades a core task for a large user segment |
-| Medium | 12 | Noticeable functional, accessibility, SEO, or security defect; a workaround exists |
-| Low | 13 | Cosmetic, consistency, or best-practice gap |
-| Info | 3 | Observation or hardening suggestion |
+| High | 3 | Stops a lot of users from doing something basic |
+| Medium | 12 | Clearly broken or risky, but there's a workaround |
+| Low | 13 | Small inconsistencies or best-practice gaps |
+| Info | 3 | Worth knowing, not really bugs |
 
----
+The ones that matter most:
 
-## 2. Scope
+- On mobile, the hamburger menu can't be closed once it's open (BUG-01).
+- The Table of Contents on blog posts is dead: 190 links across 20 articles go nowhere (BUG-02).
+- On mobile, the footer's legal links are stuck behind the bottom nav bar (BUG-03).
+- There's no anti-clickjacking or content security policy header, and analytics cookies are set before consent (SEC-01, SEC-03).
+- 23 pages reuse the homepage title, and almost no page has a canonical tag (SEO-01, SEO-02).
 
-### 2.1 In scope
+## What I tested
 
-| Area | Pages / features covered |
-|---|---|
-| Core pages | `/`, `/story`, `/team`, `/services`, `/products`, `/impact`, `/contact`, `/careers`, `/internship`, `/navigation` |
-| Content | `/blog` index, filters, pagination, and all 25 posts; `/case-studies` and 13 studies; `/diaries` and 8 entries; `/bitelevate`, `/bitelevate/paths` |
-| Careers | 6 job-detail pages, including the full application form on `/careers/qa-testing-intern` |
-| Legal | `/privacy`, `/terms`, `/cookies` |
-| Global UI | Header and desktop mega-menu, mobile hamburger menu, mobile bottom tab bar, footer, newsletter pop-up modal, custom 404 |
-| Cross-cutting | Responsiveness, accessibility (WCAG 2.2 AA spot checks), performance, SEO metadata, HTTP security headers, privacy and cookies |
+I worked from the sitemap (82 URLs), then followed links to find 8 more pages that weren't listed. That covered:
 
-### 2.2 Out of scope / constraints
+- **Main pages:** home, story, team, services, products, impact, contact, careers, internship, navigation
+- **Content:** the blog index with its filters and pagination, all 25 blog posts, 13 case studies, 8 diary entries, and the BitElevate pages
+- **Careers:** all 6 job pages, including the full application form on the QA Testing Intern page
+- **Legal:** privacy, terms, cookies
+- **Shared parts of the site:** header and dropdown menus, the mobile hamburger menu, the mobile bottom tab bar, the footer, the newsletter pop-up, and the 404 page
 
-* **No production form submissions.** I tested the contact, newsletter, and application forms for client-side validation and markup only. I didn't send any data, so I wouldn't create junk leads or fake applications on a live business system.
-* **Passive security only.** I inspected headers and publicly served files. There was no fuzzing, injection, brute force, or authentication testing. I didn't probe or enumerate `portal.cynbit.in`, `/admin`, or the candidate portal.
-* **Single browser engine.** I used Chromium only, with responsive and touch emulation. Safari/WebKit and Firefox weren't available; see §7.
-* No load or stress testing.
+Across those, I looked at whether things work, whether they look right at different screen sizes, accessibility, speed, SEO basics, and security headers.
 
----
+### What I didn't test, and why
 
-## 3. Test environment matrix
+- **I didn't submit any forms.** I checked that validation works and looked at how the forms are built, but sending fake enquiries or applications to a live business felt wrong. This really needs a staging environment.
+- **No active security testing.** I only looked at headers, cookies, and public files. I didn't try injection, brute force, or anything against the login areas.
+- **Only one browser engine.** I tested in Chromium with device emulation. I didn't have Safari or Firefox, or real phones, available.
+- No load testing.
 
-| # | Device class | Viewport (CSS px) | Engine / UA | Input | Purpose |
-|---|---|---|---|---|---|
-| E1 | Desktop / laptop | 1024 × 768 (pane default) | Chromium (Claude desktop built-in browser) | Mouse + keyboard | Layout, mega-menu, keyboard focus order |
-| E2 | Tablet | 768 × 1024 | Chromium, desktop UA | Mouse / keyboard | Breakpoint between mobile and desktop nav |
-| E3 | Mobile | 375 × 812 (iPhone X/11/12-mini class) | Chromium with Android Chrome UA, 5 touch points | Touch emulation | Hamburger menu, bottom tab bar, forms, footer |
-| E4 | HTTP client | n/a | `curl` 8.x on macOS 27.2 | n/a | Status codes, redirects, headers, sitemap, robots, payload size |
+## Test environments
 
-**Network.** Home broadband. Responses were served from the Vercel `bom1` (Mumbai) edge, and the homepage was a cache HIT with roughly 0.27 s total fetch time.
+| | Device | Screen size | Browser | Used for |
+|---|---|---|---|---|
+| E1 | Laptop | 1024 × 768 | Chromium | Desktop layout, dropdown menus, keyboard navigation |
+| E2 | Tablet | 768 × 1024 | Chromium | The in-between layout |
+| E3 | Phone | 375 × 812 (iPhone 11/12-mini size) | Chromium, emulating Android Chrome with touch | Mobile menu, bottom bar, forms, footer |
+| E4 | Command line | n/a | curl on macOS | Status codes, redirects, headers, sitemap, page sizes |
 
----
+Pages were served from Vercel's Mumbai edge. A cached homepage loaded in about 0.27 s.
 
-## 4. Methodology
+## How I went about it
 
-I used a hybrid approach: automated breadth first, then manual depth.
+1. **Mapping the site.** I read robots.txt and the sitemap, downloaded every page, and pulled out all the links. That gave me 82 sitemap URLs and 100 unique internal links.
+2. **Checking every link.** I requested every internal link and image. I also checked that every `#anchor` link on a page points to an element that exists. That's how I found the dead blog Table of Contents.
+3. **Trying odd inputs.** I tried page numbers like 0, -1, 99, and "abc", plus made-up blog categories and made-up URLs, to see how the site handles them. This turned up the pagination problem.
+4. **Exploring by hand.** I clicked through menus, the pop-up, forms, filters, and the 404 page at all three screen sizes, the way a visitor would. Most of the high-severity bugs came from this.
+5. **Responsive checks.** At each size I looked for sideways scrolling, cut-off content, and fixed bars covering things.
+6. **Accessibility.** I tabbed through pages with the keyboard only. Then I used the browser console to check form labels, button names, dialog roles, heading order, alt text, and duplicate IDs.
+7. **Performance.** I looked at load timings, file sizes, and whether content is hidden in the HTML until JavaScript runs.
+8. **SEO.** I checked titles, descriptions, canonical tags, social sharing tags, sitemap coverage, and redirect types.
+9. **Security and privacy (passive only).** I checked response headers, CORS, which cookies get set before consent, how forms submit, and whether there's a security.txt.
 
-| Phase | Technique | What it produced |
-|---|---|---|
-| 1. Discovery | Parsed `robots.txt` and `sitemap.xml`, then crawled every sitemap page and extracted all `href`s | Inventory of 82 sitemap URLs plus 100 unique internal links |
-| 2. Link and status integrity | Sent a `curl` request to every internal URL and asset; checked in-page `#anchor` targets against element `id`s | 1 broken internal link (BUG-04) and 190 dead TOC anchors (BUG-02) |
-| 3. Boundary and negative testing | Fed edge values into query params: `?page=0,-1,99,abc`, unknown `?category=`, and unknown routes | Pagination off-by-one (BUG-05) and soft-404 behaviour (BUG-06) |
-| 4. Exploratory UI testing | Session-based manual testing of navigation, menus, modal, forms, filters, and the 404 page at E1–E3 | BUG-01, BUG-03, BUG-07, BUG-13, BUG-15 |
-| 5. Responsive testing | Checked each viewport for horizontal overflow (`scrollWidth` vs `clientWidth`), clipped elements, fixed-element overlap, and touch target size | BUG-03, BUG-15 |
-| 6. Accessibility | Keyboard-only traversal; console audit for label association, accessible names, roles, `aria-expanded`, heading order, skip link, alt text, and duplicate IDs | BUG-07, BUG-08, BUG-11, BUG-12, BUG-14 |
-| 7. Performance | Navigation Timing API, resource weights, SSR HTML inspection for render-blocking or hidden content | PERF-01, BUG-13 |
-| 8. SEO and metadata | Unique `<title>` and description per page, canonical, OG/Twitter tags, sitemap coverage, redirect type | SEO-01 to SEO-07 |
-| 9. Security and privacy (passive) | Response headers, CORS, cookies before consent, form `method`/`action`, `security.txt` | SEC-01 to SEC-05 |
+To make steps 2 and 6 repeatable, I turned them into two scripts in [scripts/](scripts/).
 
-The scripts I used are in [`scripts/`](scripts/) so every automated finding can be reproduced:
+## Coverage
 
-* [`scripts/crawl_check.sh`](scripts/crawl_check.sh) checks status codes, broken links, dead anchors, duplicate titles, and security headers.
-* [`scripts/browser_audit.js`](scripts/browser_audit.js) is a DevTools console snippet for the accessibility, responsive, and form checks.
-
----
-
-## 5. Coverage summary
-
-| Test area | Cases executed | Pass | Fail / issue |
+| Area | Checked | Passed | Problems |
 |---|---|---|---|
-| URL availability (sitemap) | 82 | 82 | 0 |
-| Internal link integrity | 100 unique links | 99 | 1 |
-| In-page anchor links (blog TOC) | 190 | 0 | 190 |
-| Navigation components (header, mega-menu, hamburger, bottom bar, footer) | 5 | 2 | 3 |
-| Forms (newsletter, contact, job application) | 3 forms / 28 fields | Validation fires on all three | Labelling, input types, GET fallback |
-| Responsive (3 viewports × 8 key pages) | 24 | 21 | 3 |
-| Accessibility spot checks | 12 criteria | 7 | 5 |
-| Security headers | 7 headers | 1 (HSTS) | 6 |
-| SEO metadata (90 pages) | Title uniqueness, canonical, OG | 67 pages with a unique title | 23 duplicates; 81 of 82 sitemap pages lack a canonical |
+| Sitemap URLs load | 82 | 82 | 0 |
+| Internal links | 100 | 99 | 1 |
+| Blog Table of Contents anchors | 190 | 0 | 190 |
+| Navigation parts (header, dropdowns, hamburger, bottom bar, footer) | 5 | 2 | 3 |
+| Forms (newsletter, contact, job application) | 3 forms, 28 fields | Validation works on all 3 | Labels, input types, GET fallback |
+| Layout (3 screen sizes × 8 key pages) | 24 | 21 | 3 |
+| Accessibility spot checks | 12 | 7 | 5 |
+| Security headers | 7 | 1 (HSTS) | 6 |
+| SEO metadata (90 pages) | Titles, canonical, social tags | 67 pages with a unique title | 23 duplicate titles; 81 of 82 sitemap pages have no canonical |
 
-### What works well
+### Things that worked well
 
-* All 82 sitemap URLs return `200`, and unknown routes return a real **HTTP 404** with a branded "Node Not Found" page ([evidence/07](evidence/07-custom-404-page.jpg)).
-* HTTP→HTTPS and apex→www redirects work, and HSTS is set (`max-age=63072000`).
-* All `<img>` elements have `alt` text; there are no broken images, and below-the-fold images are lazy-loaded.
-* Exactly one `<h1>` per page, `lang="en"` is set, a `<main>` landmark exists, and there are no duplicate IDs.
-* No JavaScript console errors were seen on any page tested.
-* Required-field HTML5 validation works on all three forms.
-* No horizontal scrolling at 375, 768, or 1024 px.
-* External social links in the footer use `rel="noopener noreferrer"`.
+- All 82 sitemap URLs load, and bad URLs get a proper 404 with a nicely designed error page.
+- HTTP redirects to HTTPS, and the bare domain redirects to www. HSTS is turned on.
+- Every image has alt text, nothing is broken, and images further down the page lazy-load.
+- Each page has exactly one H1, the language is set, there's a main landmark, and there are no duplicate IDs.
+- No console errors on any page I visited.
+- Required-field validation works on all three forms.
+- No sideways scrolling at any of the three sizes.
+- Footer social links that open in a new tab use `rel="noopener noreferrer"`.
 
----
+## Why these issues matter
 
-## 6. Risk assessment
-
-| Risk | Affected users | Business impact |
+| Issue | Who it affects | What it costs Cynbit |
 |---|---|---|
-| Mobile menu trap (BUG-01) | Every mobile visitor who opens the menu (mobile is typically more than 60 % of traffic in India) | Visitors may leave, hurting lead and application conversion |
-| Dead blog TOC (BUG-02) | All blog readers | Content looks broken, which undercuts the "high-performance engineering" brand message |
-| Hidden footer legal links on mobile (BUG-03) | Mobile visitors | Compliance exposure: the privacy and cookie notices aren't reachable from the footer |
-| Pre-consent analytics (SEC-03) | All visitors, including EU visitors | Regulatory exposure under the DPDP Act 2023 and GDPR |
-| No anti-clickjacking header (SEC-01) | All visitors | Forms could be framed by a malicious site |
-| Duplicate titles / no canonical (SEO-01/02) | Organic search | Diluted rankings, poor SERP snippets for case studies |
+| Mobile menu can't be closed (BUG-01) | Anyone on a phone who opens the menu, which is probably most visitors | People get frustrated and leave before contacting the team or applying |
+| Dead Table of Contents (BUG-02) | Every blog reader | Makes the site look unfinished, which is awkward for a company that sells engineering |
+| Hidden footer links on mobile (BUG-03) | Phone users | Privacy and cookie policies can't be reached from the footer |
+| Cookies before consent (SEC-03) | Every visitor | Possible compliance problems under India's DPDP Act and GDPR |
+| No anti-clickjacking header (SEC-01) | Every visitor | Another site could embed the forms in a frame |
+| Duplicate titles and no canonical tags (SEO-01, SEO-02) | People finding the site through Google | Case studies all look the same in search results |
 
----
+## What I'd test next with more time
 
-## 7. Limitations and next steps for testing
-
-* **Cross-browser.** Repeat the mobile cases on real iOS Safari, which handles `position: fixed`, `100vh`, and the dynamic toolbar differently, and on Firefox. BrowserStack or LambdaTest would cover this.
-* **Form submission (end to end).** Run against a staging environment to verify server-side validation, success and error states, duplicate-submission protection, rate limiting, and confirmation emails.
-* **Lighthouse / WebPageTest** on a throttled 4G profile, to put numbers on LCP, CLS, and INP for the hero fade-in (BUG-13) and the 1.1 MB icon font (PERF-01).
-* **Screen reader pass** with NVDA and VoiceOver to confirm the impact of BUG-08 and BUG-11.
-* **Automated regression.** See the CI proposal in [03 — Recommendations](03-Recommendations.md#4-testing-process-enhancements).
+- **Real Safari on an iPhone.** Fixed bars and full-screen overlays often behave differently there, so BUG-01 and BUG-03 should be re-checked. BrowserStack would also cover Firefox.
+- **Forms, from start to finish, on staging.** That means server-side validation, success and error messages, double-submit protection, and confirmation emails.
+- **Lighthouse on a slow 4G profile**, to put real numbers on how much the hero animation and the large icon font slow things down.
+- **A pass with a screen reader** (VoiceOver or NVDA) to hear what the label and icon issues actually sound like.
+- **Automated tests in CI**, which I describe in [03-Recommendations.md](03-Recommendations.md).

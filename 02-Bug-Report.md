@@ -1,260 +1,218 @@
-# 02 — Bug & Issue Report: www.cynbit.in
+# Bug & Issue Report: www.cynbit.in
 
-Environment IDs (E1–E4) refer to the matrix in [01 — QA Audit Report §3](01-QA-Audit-Report.md#3-test-environment-matrix). A flat version of this table is in [bugs.csv](bugs.csv) for import into Jira, Linear, or Sheets.
+This is the full list of what I found. E1 to E4 refer to the test environments in the [audit report](01-QA-Audit-Report.md#test-environments). Everything here is also in [bugs.csv](bugs.csv) if you'd rather sort it in a spreadsheet.
 
-**Severity:** High (blocks or seriously degrades a core task) · Medium · Low · Info
-**Priority:** P1 fix this sprint · P2 next sprint · P3 backlog
+**Severity** is how badly it hurts the user (High, Medium, Low, Info). **Priority** is when I think it should be fixed: P1 this sprint, P2 next sprint, P3 whenever there's time.
 
-## Summary table
+## All issues
 
-| ID | Title | Category | Severity | Priority | Env |
+| ID | What's wrong | Type | Severity | Priority | Env |
 |---|---|---|---|---|---|
-| [BUG-01](#bug-01) | Mobile menu can't be closed: overlay covers the close button and Escape doesn't work | Functional / Responsive | **High** | P1 | E3 |
-| [BUG-02](#bug-02) | Table of Contents links do nothing on all 20 long-form blog posts | Functional | **High** | P1 | All |
-| [BUG-03](#bug-03) | Mobile footer bottom row (Terms, Cookies, ©) hidden under the fixed bottom nav | Responsive | **High** | P1 | E3 |
-| [BUG-04](#bug-04) | Broken internal link `/blog/ai-agents-transforming-business` (404) | Broken element | Medium | P1 | All |
-| [BUG-05](#bug-05) | Blog pagination "Previous Page" on page 1 links to `?page=0`, which is an empty state | Functional | Medium | P2 | All |
-| [BUG-07](#bug-07) | Newsletter pop-up isn't an accessible dialog and can't be dismissed with Escape | Usability / A11y | Medium | P2 | All |
-| [BUG-08](#bug-08) | Form fields have no programmatically associated labels (27 fields) | Accessibility | Medium | P2 | All |
-| [BUG-09](#bug-09) | Job application form: wrong input types, unnamed fields, high friction | Usability | Medium | P2 | All |
-| [BUG-11](#bug-11) | Icon ligature names are read aloud ("west Previous Page", "Companyexpand_more") | Accessibility | Medium | P2 | All |
-| [BUG-13](#bug-13) | Hero content is served with `opacity:0` and stays invisible until JS runs | Performance / UX | Medium | P2 | All |
-| [SEO-01](#seo-01) | 23 pages use the homepage `<title>` (all case studies and diaries) | SEO | Medium | P2 | E4 |
-| [SEO-02](#seo-02) | `rel=canonical` missing on 81 of 82 pages; apex→www is a 307; sitemap and OG point to the redirecting host | SEO | Medium | P2 | E4 |
-| [PERF-01](#perf-01) | 1.1 MB icon font (full Material Symbols variable font) loaded on every page | Performance | Medium | P2 | All |
-| [SEC-01](#sec-01) | Missing security headers (CSP, frame-ancestors / XFO, nosniff, Referrer-Policy, Permissions-Policy) | Security | Medium | P2 | E4 |
-| [SEC-03](#sec-03) | Google Analytics cookies set before consent; no consent banner | Privacy / Compliance | Medium | P2 | All |
-| [BUG-06](#bug-06) | Invalid `?page=` / `?category=` values return HTTP 200 (soft 404) | Functional | Low | P3 | All |
-| [BUG-10](#bug-10) | Blog filter chips cover only 5 of the 13 categories used by posts | Usability | Low | P3 | All |
-| [BUG-12](#bug-12) | No skip-to-content link; heading levels skip (h2→h4) | Accessibility | Low | P3 | All |
-| [BUG-14](#bug-14) | Hero `<h1>` accessible text lacks a space ("withSaaS platforms") | Accessibility | Low | P3 | All |
-| [BUG-15](#bug-15) | Hero floating stat card clipped at the right edge around 1024 px | Responsive | Low | P3 | E1 |
-| [BUG-16](#bug-16) | Team LinkedIn links open in the same tab; other social links open a new tab | Consistency | Low | P3 | All |
-| [SEO-03](#seo-03) | Brand duplicated in titles ("… \| Cynbit Technologies \| Cynbit Technologies") | SEO | Low | P3 | E4 |
-| [SEO-04](#seo-04) | 8 diary entries missing from `sitemap.xml` | SEO | Low | P3 | E4 |
-| [SEO-05](#seo-05) | `og:image` / `twitter:image` is an SVG logo (not rendered by social platforms) | SEO | Low | P3 | E4 |
-| [SEO-06](#seo-06) | Category links contain unencoded spaces (`?category=AI Agents`) | SEO / Standards | Low | P3 | E4 |
-| [SEO-07](#seo-07) | 404 page is served with the homepage `<title>`; it's corrected only by client JS | SEO | Low | P3 | E4 |
-| [SEC-02](#sec-02) | `Access-Control-Allow-Origin: *` on every HTML page | Security | Low | P3 | E4 |
-| [SEC-04](#sec-04) | Forms declare `method="get"` with no `action`, so pre-hydration submits would put PII in the URL | Security / Privacy | Low | P3 | All |
-| [PERF-02](#perf-02) | About 217 KB of JS across 16 scripts on the homepage | Performance | Info | P3 | E4 |
-| [PERF-03](#perf-03) | Uncached responses for `/blog` (1.64 s) and `/careers` (1.43 s) | Performance | Info | P3 | E4 |
-| [SEC-05](#sec-05) | No `/.well-known/security.txt` | Security | Info | P3 | E4 |
+| [BUG-01](#bug-01-mobile-menu-cant-be-closed) | Mobile menu can't be closed | Functional | **High** | P1 | E3 |
+| [BUG-02](#bug-02-blog-table-of-contents-links-dont-work) | Blog Table of Contents links don't work | Functional | **High** | P1 | All |
+| [BUG-03](#bug-03-mobile-footer-links-hidden-behind-the-bottom-bar) | Mobile footer links hidden behind the bottom bar | Responsive | **High** | P1 | E3 |
+| [BUG-04](#bug-04-broken-link-to-a-blog-post) | Broken link to a blog post | Broken link | Medium | P1 | All |
+| [BUG-05](#bug-05-previous-page-on-page-1-goes-to-an-empty-page) | "Previous Page" on page 1 goes to an empty page | Functional | Medium | P2 | All |
+| [BUG-07](#bug-07-newsletter-pop-up-is-hard-to-dismiss-and-not-accessible) | Newsletter pop-up is hard to dismiss and not accessible | Usability | Medium | P2 | All |
+| [BUG-08](#bug-08-form-labels-arent-connected-to-their-inputs) | Form labels aren't connected to their inputs | Accessibility | Medium | P2 | All |
+| [BUG-09](#bug-09-job-application-form-problems) | Job application form problems | Usability | Medium | P2 | All |
+| [BUG-11](#bug-11-screen-readers-read-out-icon-names) | Screen readers read out icon names | Accessibility | Medium | P2 | All |
+| [BUG-13](#bug-13-hero-section-is-invisible-until-javascript-loads) | Hero section is invisible until JavaScript loads | Performance | Medium | P2 | All |
+| [SEO-01](#seo-01-23-pages-have-the-homepage-title) | 23 pages have the homepage title | SEO | Medium | P2 | E4 |
+| [SEO-02](#seo-02-canonical-tags-and-redirects) | Canonical tags missing; wrong redirect type | SEO | Medium | P2 | E4 |
+| [PERF-01](#perf-01-11-mb-icon-font) | 1.1 MB icon font on every page | Performance | Medium | P2 | All |
+| [SEC-01](#sec-01-missing-security-headers) | Missing security headers | Security | Medium | P2 | E4 |
+| [SEC-03](#sec-03-tracking-cookies-before-consent) | Tracking cookies set before consent | Privacy | Medium | P2 | All |
+| [BUG-06](#bug-06-invalid-pages-return-200-instead-of-404) | Invalid page numbers return 200 instead of 404 | Functional | Low | P3 | All |
+| [BUG-10](#bug-10-most-blog-categories-have-no-filter) | Most blog categories have no filter button | Usability | Low | P3 | All |
+| [BUG-12](#bug-12-no-skip-link-headings-skip-levels) | No skip link; headings skip levels | Accessibility | Low | P3 | All |
+| [BUG-14](#bug-14-missing-space-in-the-homepage-heading) | Missing space in the homepage heading | Accessibility | Low | P3 | All |
+| [BUG-15](#bug-15-hero-card-cut-off-at-1024-px) | Hero card cut off at 1024 px | Responsive | Low | P3 | E1 |
+| [BUG-16](#bug-16-external-links-behave-differently) | External links behave differently | Consistency | Low | P3 | All |
+| [SEO-03](#seo-03-company-name-twice-in-titles) | Company name appears twice in titles | SEO | Low | P3 | E4 |
+| [SEO-04](#seo-04-diary-entries-missing-from-sitemap) | Diary entries missing from sitemap | SEO | Low | P3 | E4 |
+| [SEO-05](#seo-05-social-preview-image-is-an-svg) | Social preview image is an SVG | SEO | Low | P3 | E4 |
+| [SEO-06](#seo-06-spaces-in-category-links) | Spaces in category links | SEO | Low | P3 | E4 |
+| [SEO-07](#seo-07-404-page-has-the-homepage-title) | 404 page has the homepage title | SEO | Low | P3 | E4 |
+| [SEC-02](#sec-02-wide-open-cors-header) | Wide-open CORS header | Security | Low | P3 | E4 |
+| [SEC-04](#sec-04-forms-could-leak-data-into-the-url) | Forms could leak data into the URL | Privacy | Low | P3 | All |
+| [PERF-02](#perf-02-javascript-size) | JavaScript size | Performance | Info | P3 | E4 |
+| [PERF-03](#perf-03-slow-uncached-pages) | Slow uncached pages | Performance | Info | P3 | E4 |
+| [SEC-05](#sec-05-no-securitytxt) | No security.txt | Security | Info | P3 | E4 |
 
 ---
 
-## High severity
+## High
 
-### BUG-01
-**Mobile menu can't be closed: overlay covers the close button and Escape doesn't work**
+### BUG-01: Mobile menu can't be closed
 
-| Field | Detail |
-|---|---|
-| Severity / Priority | High / P1 |
-| Environment | E3 (375 × 812, touch). Reproduced on `/` and `/services` |
-| Evidence | [02a before](evidence/02a-mobile-services-before-menu.jpg) → [02b menu open, header gone](evidence/02b-mobile-menu-open-no-close-button.jpg) |
+**Where:** any page at phone size (E3). I reproduced it on `/` and `/services`.
+**Screenshots:** [before opening](evidence/02a-mobile-services-before-menu.jpg), [menu open with no way out](evidence/02b-mobile-menu-open-no-close-button.jpg)
 
-**Steps to reproduce**
-1. Open `https://www.cynbit.in/services` at mobile width.
-2. Tap the hamburger icon (top right).
-3. Wait for the slide-in animation to finish (about 0.5 s).
-4. Tap where the X (close) icon was, or press Escape.
+**Steps**
+1. Open https://www.cynbit.in/services on a phone-sized screen.
+2. Tap the hamburger icon in the top right.
+3. Wait half a second for the menu to finish sliding in.
+4. Tap where the X was, or press Escape.
 
-**Expected:** The menu closes.
-**Actual:** The menu stays open. The overlay (`div.fixed.inset-0.z-[90]`) is painted above the header, which has `z-index:100` but sits in a lower stacking context. So the logo and the X disappear, and `document.elementFromPoint()` at the X's position returns the overlay. Escape has no handler. The only way out is to tap a menu link or a bottom-bar item, which forces navigation. Page scroll also isn't locked behind the overlay (`body{overflow:visible}`).
+**Expected:** the menu closes.
+**What happens:** nothing. The menu overlay ends up on top of the header, so the logo and the X button disappear underneath it. I confirmed it in the console: the element at the X button's position is the overlay, not the button. Escape isn't handled either. The only way out is to tap one of the links, which takes you to another page. The page behind the menu also still scrolls.
 
-**Suggested fix:** Render the close button inside the overlay, or lift the header above it (for example, put both in the same stacking context, or move the overlay into a portal with a lower z-index than the header). Add an Escape key handler, lock body scroll while the menu is open, and set `aria-expanded` and `aria-controls` on the toggle.
+**Likely fix:** put a close button inside the overlay itself, or make sure the header sits above it. Also add an Escape handler, stop the page behind from scrolling, and set `aria-expanded` on the menu button.
 
----
+### BUG-02: Blog Table of Contents links don't work
 
-### BUG-02
-**Table of Contents links do nothing on all 20 long-form blog posts**
+**Where:** 20 of the 25 blog posts, which is every long article. 190 links in total. `scripts/crawl_check.sh` lists them all.
 
-| Field | Detail |
-|---|---|
-| Severity / Priority | High / P1 |
-| Environment | All |
-| Scope | 20 of 25 posts; 190 anchor links. Full list from `scripts/crawl_check.sh` |
+**Steps**
+1. Open https://www.cynbit.in/blog/ai-lead-generation.
+2. In the "Table of Contents" box, click "Conclusion" or "FAQ".
 
-**Steps to reproduce**
-1. Open `https://www.cynbit.in/blog/ai-lead-generation`.
-2. In "Table of Contents", click "Conclusion" or "FAQ".
+**Expected:** the page scrolls to that section.
+**What happens:** nothing. The links point to things like `#conclusion` and `#faq`, but none of the headings has an `id`, so there's nothing to scroll to.
 
-**Expected:** The page scrolls to that section.
-**Actual:** Nothing happens. The TOC links to `#introduction`, `#prospecting`, …, `#conclusion`, `#faq`, but none of the `<h2>` headings has an `id`. `document.querySelectorAll('h2[id]').length === 0`.
+**Likely fix:** generate IDs for headings when the article is rendered (`rehype-slug` does this), and add `scroll-margin-top` so headings don't end up hidden under the fixed header.
 
-**Suggested fix:** Generate slug `id`s on headings in the MDX/markdown renderer (for example with `rehype-slug`), or add explicit ids that match the TOC keys. Add `scroll-margin-top` equal to the fixed header height so headings don't land underneath it.
+### BUG-03: Mobile footer links hidden behind the bottom bar
 
----
+**Where:** every page at phone size (E3).
+**Screenshot:** [footer under the bottom nav](evidence/03-mobile-footer-under-bottom-nav.jpg)
 
-### BUG-03
-**Mobile footer bottom row (Terms, Cookies, ©) hidden under the fixed bottom nav**
+**Steps**
+1. Open any page on a phone-sized screen.
+2. Scroll all the way down.
 
-| Field | Detail |
-|---|---|
-| Severity / Priority | High / P1 (legal links must be reachable) |
-| Environment | E3 (375 × 812). Every page with the bottom tab bar |
-| Evidence | [03](evidence/03-mobile-footer-under-bottom-nav.jpg) |
+**Expected:** the whole footer is visible, including Terms, Cookies, Navigation, and the copyright line.
+**What happens:** the bottom navigation bar is fixed to the bottom of the screen (from y = 704 to 812 px), and the last row of the footer is at y = 779 to 794 px, directly behind it. There's no padding at the bottom of the page to make room, so you can't scroll it into view. The copyright text is half cut off.
 
-**Steps to reproduce**
-1. Open any page at mobile width.
-2. Scroll to the very bottom.
-
-**Expected:** The whole footer, including "Terms", "Cookies", "Navigation", and "© 2026 Cynbit Technologies", is visible and tappable.
-**Actual:** The fixed bottom nav occupies y = 704–812 px. At maximum scroll, the footer's last row sits at y = 779–794 px, completely underneath it. `body` and `main` have `padding-bottom: 0`, so no space is reserved. The copyright line is cut in half.
-
-**Suggested fix:** Add `padding-bottom: calc(<bottom-nav height> + env(safe-area-inset-bottom))` to `body` or the footer below the `xl` breakpoint.
+**Likely fix:** add bottom padding to the page on mobile equal to the bar's height, plus `env(safe-area-inset-bottom)` for iPhones.
 
 ---
 
-## Medium severity
+## Medium
 
-### BUG-04
-**Broken internal link `/blog/ai-agents-transforming-business` (404)**
-* **Found on:** `/blog/ai-chatbots-vs-human-support`, `/blog/ai-automation-trends-2026`, `/blog/future-ai-customer-support`, `/blog/why-startups-need-custom-dashboards` (the "Related Insights" or inline links).
-* **Expected:** The link goes to a live article. **Actual:** HTTP 404 "Post Not Found".
-* **Likely cause:** The article was renamed to `/blog/ai-agents-business-operations`.
-* **Fix:** Update the links and add a permanent redirect (`308`) from the old slug in `next.config.js` `redirects()`.
+### BUG-04: Broken link to a blog post
 
-### BUG-05
-**Blog pagination "Previous Page" on page 1 links to `?page=0`, which is an empty state**
-* **Steps:** Open `/blog` and inspect or click "Previous Page" while on page 1.
-* **Expected:** The control is disabled or hidden on page 1. **Actual:** It's an active link to `/blog?page=0`, which shows "No insights matching your criteria were found." ([evidence/04](evidence/04-blog-page-0-empty.jpg))
-* **Fix:** Clamp the page to `>= 1` and render the control as disabled (`aria-disabled="true"`, no `href`) on the first page. Do the same for "Next" on the last page.
+Four posts (`ai-chatbots-vs-human-support`, `ai-automation-trends-2026`, `future-ai-customer-support`, and `why-startups-need-custom-dashboards`) link to `/blog/ai-agents-transforming-business`, which returns a 404. My guess is that the post was renamed to `/blog/ai-agents-business-operations`. Updating the links and adding a permanent redirect from the old address would fix it.
 
-### BUG-07
-**Newsletter pop-up isn't an accessible dialog and can't be dismissed with Escape**
-* **Observed** ([evidence/01](evidence/01-newsletter-modal-autopopup.jpg)): The modal opens about 3 s after first page load and covers the hero. The container has no `role="dialog"` or `aria-modal`, and focus stays on `<body>`, so keyboard and screen-reader users don't know it opened. Escape doesn't close it. The email input has no associated label. A `cynbit_newsletter_seen` localStorage flag prevents repeat pop-ups, which is good.
-* **Impact:** WCAG 2.1.2 / 2.4.3 / 4.1.2. Interstitials over the main content on mobile can also count against Google's intrusive-interstitial guideline.
-* **Fix:** Use an accessible dialog primitive (for example, native `<dialog>` with `showModal()`, or Radix Dialog). Trap focus, close on Escape and backdrop click, and return focus afterwards. Consider triggering on scroll depth or exit intent rather than a timer.
+### BUG-05: "Previous Page" on page 1 goes to an empty page
 
-### BUG-08
-**Form fields have no programmatically associated labels**
-* **Contact form** (`/contact`): 5 fields: `fullName`, `email`, `company`, `industry`, `message`.
-* **Job application** (`/careers/*`): 22 fields; there are 22 `<label>` elements with no `for`.
-* Visible labels exist, but `input.labels.length === 0`. Screen readers therefore announce only the placeholder text, which disappears once the user types.
-* **Fix:** Add `htmlFor={id}` / `id`, or wrap each input inside its `<label>`. Also add `autocomplete` tokens (`name`, `email`, `organization`, `tel`, `bday`, `address-level2`, …) to speed up autofill (WCAG 1.3.5).
+On `/blog`, the "Previous Page" button is active even though you're already on page 1. It links to `/blog?page=0`, which shows "No insights matching your criteria were found." ([screenshot](evidence/04-blog-page-0-empty.jpg)). It should be disabled on the first page, and "Next" should be disabled on the last.
 
-### BUG-09
-**Job application form: wrong input types, unnamed fields, high friction**
-* `phone` and `whatsapp` use `type="text"`, so mobile users get the full keyboard and the format isn't validated. They should be `type="tel"` with `inputmode="tel"` and a pattern.
-* 8 fields (5 selects, 2 text inputs, 1 number input) have no `name` attribute. That works with React state, but it breaks native form semantics, autofill, and any non-JS fallback.
-* 21 of 23 fields are required, including **date of birth, gender, and full permanent address**, for an internship application. This adds friction and conflicts with data-minimisation principles (DPDP Act 2023 §6). Consider making these optional or collecting them later.
-* No `maxLength` on any text field or textarea.
+### BUG-07: Newsletter pop-up is hard to dismiss and not accessible
 
-### BUG-11
-**Icon ligature names are read aloud by assistive tech**
-* Material Symbols icons are rendered as text ligatures without `aria-hidden="true"`. The accessible names come out as "**west** Previous Page", "Next Page **east**", "Company**expand_more**", "Expertise**expand_more**", "**close**", "**auto_stories** Insights & Archives", and "SUBSCRIBE**send**".
-* The desktop mega-menu toggles (Company, Expertise, BitElevate) and the hamburger don't expose `aria-expanded`.
-* **Fix:** Add `aria-hidden="true"` to every `.material-symbols-outlined` span, give icon-only buttons an `aria-label`, and set `aria-expanded` on disclosure buttons.
+About 3 seconds after you first land on the site, a newsletter pop-up covers the page ([screenshot](evidence/01-newsletter-modal-autopopup.jpg)). Problems I noticed:
 
-### BUG-13
-**Hero content is served with `opacity:0` and stays invisible until JS runs**
-* The SSR HTML contains `style="opacity:0;transform:translateY(10px)"` on hero wrappers, a Framer Motion `initial` state. On a fast connection the hero becomes visible about 1.3 s after navigation (FCP is about 0.7 s, so for roughly 0.6 s the user sees an empty page). On slow devices, background tabs, or when JS fails, the screen stays blank ([evidence/05](evidence/05-hero-invisible-before-hydration.jpg), taken at 375 px).
-* **Impact:** It delays LCP, gives a "broken site" first impression, and the content is invisible if JS is blocked.
-* **Fix:** Don't hide above-the-fold content in SSR. Use `initial={false}` for the hero, or a CSS-only animation that starts from visible, and honour `prefers-reduced-motion`.
+- Escape doesn't close it.
+- It isn't marked as a dialog (no `role="dialog"` or `aria-modal`), and focus doesn't move into it, so a screen reader user wouldn't know it appeared.
+- The email field has no proper label.
 
-### SEO-01
-**23 pages use the generic homepage title**
-`/case-studies`, all 13 `/case-studies/*`, `/diaries`, and all 8 `/diaries/*` render `<title>Cynbit Technologies | AI Automation & Software Solutions Jaipur</title>` with the homepage description. In search results they're indistinguishable from each other.
-**Fix:** Implement `generateMetadata()` for these route segments, the same way blog and careers pages already do.
+The good part is that it only shows once (it remembers in localStorage). I'd use a proper dialog component and maybe trigger it after some scrolling instead of a timer.
 
-### SEO-02
-**No canonical; temporary apex redirect; sitemap points to the redirecting host**
-* 81 of 82 sitemap pages have no `<link rel="canonical">`. The one exception, `/bitelevate`, points its canonical at the apex host (`https://cynbit.in/bitelevate`), which redirects.
-* `https://cynbit.in/` → `https://www.cynbit.in/` returns **307 Temporary**, which tells search engines the apex is still the primary host.
-* `sitemap.xml`, the `Sitemap:` line in `robots.txt`, and `og:url` all use `https://cynbit.in/...`, so every URL submitted to search engines goes through a redirect.
-* **Fix:** Pick one host (www). Make the apex redirect a 308 or 301. Emit `alternates.canonical` and set `metadataBase` to `https://www.cynbit.in`. Regenerate the sitemap with www URLs.
+### BUG-08: Form labels aren't connected to their inputs
 
-### PERF-01
-**1.1 MB icon font loaded on every page**
-`fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1` downloads the full variable font: **1,145,372 bytes**, about 1.1 MB, for roughly 30 icons. Because of `display=swap`, the raw ligature text ("arrow_forward", "expand_more") flashes before the font loads.
-**Fix:** Request only the icons in use with Google Fonts' `&icon_names=` parameter and fixed axis values (`wght@400`, `FILL@0`), or switch to tree-shaken inline SVG icons (lucide-react, or `@material-symbols/svg-400`). Expected saving: more than 1 MB per first visit.
+The forms have visible labels, but they aren't linked to their inputs (no `for` attribute, and the inputs aren't nested inside the labels). Screen readers then announce only the placeholder, which disappears once you start typing. This affects all 5 fields on the contact form and 22 on the job application form. Adding `htmlFor` and `id` pairs fixes it. Adding `autocomplete` values would also help browsers fill the forms in.
 
-### SEC-01
-**Missing HTTP security headers**
+### BUG-09: Job application form problems
 
-| Header | Present? | Risk if missing |
+These are on `/careers/qa-testing-intern` (the other job pages use the same form):
+
+- Phone and WhatsApp use `type="text"`, so phones show the full keyboard instead of the number pad, and the format isn't checked.
+- 8 fields have no `name` attribute. It works because the site uses React, but it breaks autofill and any fallback.
+- 21 of 23 fields are required, including date of birth, gender, and full permanent address. That's a lot to ask for an internship application, and it goes against the data-minimisation idea in India's DPDP Act. I'd make those optional.
+- No text field has a maximum length.
+
+### BUG-11: Screen readers read out icon names
+
+The site uses Google's Material Symbols font, where an icon is really just a word drawn as a picture. Without `aria-hidden="true"`, screen readers read the word out. So the pagination buttons come out as "west Previous Page" and "Next Page east", and the menu reads "Companyexpand_more". Other examples are "close", "auto_stories", and "SUBSCRIBEsend". The dropdown buttons also don't say whether they're open (no `aria-expanded`).
+
+### BUG-13: Hero section is invisible until JavaScript loads
+
+The homepage hero is in the HTML with `opacity:0`, which is the starting state of the fade-in animation. So until JavaScript loads and plays the animation, there's nothing to see. On my connection the text appeared about 1.3 s after the page started loading, while the first paint was at about 0.7 s, so there's roughly half a second of empty page. On a slow phone it's longer, and if JavaScript fails it stays blank ([screenshot](evidence/05-hero-invisible-before-hydration.jpg)). The fix is to let the hero start visible, or skip the entrance animation for above-the-fold content.
+
+### SEO-01: 23 pages have the homepage title
+
+The case studies page, all 13 case studies, the diaries page, and all 8 diary entries use the homepage title ("Cynbit Technologies | AI Automation & Software Solutions Jaipur") and the homepage description. In Google they'd all look identical. Blog and careers pages already set their own titles, so the same approach just needs adding to these two sections.
+
+### SEO-02: Canonical tags and redirects
+
+- 81 of the 82 sitemap pages have no canonical tag. The one that does (`/bitelevate`) points it at `https://cynbit.in/...`, which redirects.
+- `cynbit.in` redirects to `www.cynbit.in` with a 307 (temporary), when it should be a 301 or 308 (permanent).
+- The sitemap, the robots.txt sitemap line, and the `og:url` tag all use `cynbit.in` without the www, so every URL Google is given goes through a redirect first.
+
+### PERF-01: 1.1 MB icon font
+
+Every page downloads the whole Material Symbols variable font: 1,145,372 bytes, for about 30 icons. While it loads you can sometimes see the raw icon names ("arrow_forward") flash on screen. Google Fonts can serve only the icons you use (the `icon_names` parameter), and SVG icons would avoid the font entirely. Either way, that saves more than 1 MB on a first visit.
+
+### SEC-01: Missing security headers
+
+| Header | Status | Why it matters |
 |---|---|---|
-| `Strict-Transport-Security` | Yes (`max-age=63072000`) but no `includeSubDomains` / `preload` | Subdomains such as `portal.` aren't covered |
-| `Content-Security-Policy` | No | XSS impact isn't limited |
-| `X-Frame-Options` / CSP `frame-ancestors` | No | **Clickjacking**: the contact and application forms can be framed |
-| `X-Content-Type-Options: nosniff` | No | MIME sniffing |
-| `Referrer-Policy` | No | Full URLs may leak to third parties |
-| `Permissions-Policy` | No | No restriction on camera, mic, or geolocation APIs |
+| Strict-Transport-Security | Present, but without `includeSubDomains` | Subdomains like `portal.` aren't covered |
+| Content-Security-Policy | Missing | Nothing limits the damage if a script injection ever happens |
+| X-Frame-Options / frame-ancestors | Missing | Another site could load the forms in a hidden frame (clickjacking) |
+| X-Content-Type-Options | Missing | The browser may guess file types |
+| Referrer-Policy | Missing | Full URLs can leak to other sites |
+| Permissions-Policy | Missing | No limits on camera, mic, or location access |
 
-**Fix:** Add a `headers()` block in `next.config.js` or `vercel.json`. A starter config is in [03 — Recommendations](03-Recommendations.md#a-security-headers-starter-nextconfigjs).
+All of these can be added in a few lines of `next.config.js`. There's a starting point in [03-Recommendations.md](03-Recommendations.md#security-headers-starter).
 
-### SEC-03
-**Analytics cookies set before consent; no consent banner**
-On first visit, `_ga`, `_ga_LK6CQWCWX0` (GA4 `G-LK6CQWCWX0`) and `_gcl_au` (Google Ads conversion linker, an advertising cookie) are written immediately, and no consent banner appears, even though the site publishes a `/cookies` policy. That's inconsistent with consent-first requirements under India's DPDP Act 2023 and with GDPR/ePrivacy for EU visitors.
-**Fix:** Add a consent banner and use Google Consent Mode v2 (`analytics_storage: 'denied'` by default), or load gtag only after opt-in.
+### SEC-03: Tracking cookies before consent
 
----
-
-## Low severity
-
-### BUG-06
-**Invalid `?page=` / `?category=` values return HTTP 200 (soft 404)**
-`/blog?page=99`, `?page=-1`, `?page=abc`, and `?category=Nope` all return `200` with the "No insights" empty state. Search engines may index these empty pages. **Fix:** Redirect out-of-range pages to page 1 or return `notFound()`, and add `noindex` to filtered views.
-
-### BUG-10
-**Blog filter chips cover only 5 of the 13 categories used by posts**
-The chips are All, IT Strategy, Marketing, Education, Cloud Architecture, and Community. Posts are tagged with eight further categories that have no chip: AI Agents, AI Automation, AI Chatbots, Business Automation, Data Analytics, SaaS Development, Software Development, and Web Development. Most AI content, which is the company's core offering, can't be filtered from the blog index.
-
-### BUG-12
-**No skip-to-content link; heading levels skip**
-Keyboard users must tab through the entire header and mega-menu on every page. Homepage headings jump from h2 to h4 in several sections (WCAG 2.4.1, 1.3.1).
-
-### BUG-14
-**Hero `<h1>` accessible text lacks a space**
-The rotating word is concatenated without whitespace, so `h1.textContent` is "Architecting the future with**SaaS** platforms." Screen readers say "withSaaS". Add a space or `aria-label` on the `<h1>`, and set `aria-live="off"` on the rotating word.
-
-### BUG-15
-**Hero floating stat card clipped at the right edge around 1024 px**
-At a 1024 px viewport, the "Efficiency" glass card in the hero visualisation is partially cut off at the right edge ([evidence/06](evidence/06-hero-card-clipped-right-edge.jpg)). It looks like a positioning bug rather than an intentional bleed. Constrain it inside the container at the `lg` breakpoint.
-
-### BUG-16
-**Inconsistent external link behaviour**
-On `/team`, the founders' LinkedIn links have no `target`, so they navigate away from the site. Footer Facebook and X links open in a new tab with `rel="noopener noreferrer"`. Pick one convention.
-
-### SEO-03
-**Brand duplicated in titles**
-The title template appends "| Cynbit Technologies" to titles that already contain it. Examples: home, "Cynbit Technologies | AI Automation & Software Solutions Jaipur | Cynbit Technologies"; `/blog`, "Insights & Ideas | Cynbit Technologies | Cynbit Technologies"; `/contact`, "Contact Us | Cynbit Technologies - AI & Software Solutions | Cynbit Technologies". It wastes SERP title space.
-
-### SEO-04
-**Diary entries missing from the sitemap**
-The 8 `/diaries/*` entries are linked from `/diaries` but aren't listed in `sitemap.xml`.
-
-### SEO-05
-**SVG social image**
-`og:image` and `twitter:image` are `https://cynbit.in/logo.svg`. Facebook, LinkedIn, X, and WhatsApp don't render SVG previews, and `twitter:card=summary_large_image` expects a 1200×630 raster. Use a PNG or JPG, or `opengraph-image.tsx`.
-
-### SEO-06
-**Unencoded spaces in hrefs**
-`href="/blog?category=AI Agents"` and 12 other category links contain raw spaces. Browsers tolerate this, but it isn't a valid URL and some crawlers and link checkers split it. Use `encodeURIComponent` or slug-style categories (`?category=ai-agents`).
-
-### SEO-07
-**404 page served with the homepage title**
-The server-rendered 404 has `<title>Cynbit Technologies | AI Automation & Software Solutions Jaipur</title>`. It becomes "Post Not Found" only after client JS runs. Set the title in `not-found.tsx` metadata.
-
-### SEC-02
-**Wildcard CORS on HTML**
-Every HTML response sends `Access-Control-Allow-Origin: *`. There's no direct data exposure, since the pages are public and no credentials are allowed, but it's unnecessary and widens the attack surface if an authenticated route is ever added under the same config. Scope it to `/api/public/*` if needed.
-
-### SEC-04
-**Forms fall back to GET with no action**
-The contact and application `<form>` elements have no `action` and default to `method="get"`. If a user submits before hydration completes, or with JS disabled, the browser does a native GET to the current URL with name, email, phone, address, and so on in the **query string**. That data ends up in browser history, server and CDN logs, and analytics. **Fix:** Set `method="post"` and point `action` at a Server Action or API route, or disable the submit button until hydrated.
+On the very first visit, before you click anything, the site sets `_ga` and `_ga_LK6CQWCWX0` (Google Analytics) and `_gcl_au` (Google Ads). There's no cookie banner, even though the site has a cookie policy page. That doesn't fit with consent rules under India's DPDP Act, or GDPR for visitors from Europe. Google's Consent Mode with analytics off by default, plus a simple banner, would sort it.
 
 ---
 
-## Informational
+## Low
 
-### PERF-02
-The homepage loads 16 JS chunks (about 217 KB decompressed) plus 101 KB of HTML. That's acceptable, but check which chunks hold animation libraries that could be lazy-loaded below the fold.
+### BUG-06: Invalid pages return 200 instead of 404
+`/blog?page=99`, `?page=-1`, `?page=abc`, and `?category=Nope` all return 200 with an empty list. Google might index these empty pages. Out-of-range pages should redirect to page 1 or return a 404.
 
-### PERF-03
-Cache-miss timings in the sitemap sweep were `/blog` 1.64 s and `/careers` 1.43 s, against 0.27 s for the cached homepage. Consider ISR (`revalidate`) for these routes.
+### BUG-10: Most blog categories have no filter
+The blog has filter buttons for IT Strategy, Marketing, Education, Cloud Architecture, and Community. But posts are also tagged AI Agents, AI Automation, AI Chatbots, Business Automation, Data Analytics, SaaS Development, Software Development, and Web Development, and there's no button for any of those. That means most of the AI content, which is Cynbit's main focus, can't be filtered.
 
-### SEC-05
-There's no `/.well-known/security.txt` (RFC 9116), so researchers have no published way to report vulnerabilities.
+### BUG-12: No skip link; headings skip levels
+There's no "skip to content" link, so keyboard users have to tab through the whole header on every page. On the homepage, headings jump from H2 straight to H4 in a few places.
+
+### BUG-14: Missing space in the homepage heading
+The rotating word in the H1 is attached without a space, so the actual text is "Architecting the future withSaaS platforms." A screen reader says "withSaaS".
+
+### BUG-15: Hero card cut off at 1024 px
+At a 1024 px wide screen, the small "Efficiency" card floating in the hero is cut off at the right edge ([screenshot](evidence/06-hero-card-clipped-right-edge.jpg)). It doesn't look intentional.
+
+### BUG-16: External links behave differently
+On `/team`, the LinkedIn links open in the same tab and take you away from the site. The Facebook and X links in the footer open a new tab. It would be better to pick one approach.
+
+### SEO-03: Company name twice in titles
+Many titles end with the company name twice, for example "Insights & Ideas | Cynbit Technologies | Cynbit Technologies". The title template adds "| Cynbit Technologies" even when the page title already includes it.
+
+### SEO-04: Diary entries missing from sitemap
+The 8 diary entries are linked from `/diaries` but aren't in `sitemap.xml`.
+
+### SEO-05: Social preview image is an SVG
+The `og:image` and `twitter:image` are `logo.svg`. Facebook, LinkedIn, X, and WhatsApp don't show SVG previews, so shared links have no image. A 1200×630 PNG would fix it.
+
+### SEO-06: Spaces in category links
+Category links look like `/blog?category=AI Agents`, with a raw space. Browsers handle it, but it isn't a valid URL and some tools split it in half. Encoding it, or using `ai-agents` style slugs, would fix it.
+
+### SEO-07: 404 page has the homepage title
+The 404 page initially loads with the homepage title. It only changes to "Post Not Found" after JavaScript runs, so crawlers see the wrong one.
+
+### SEC-02: Wide-open CORS header
+Every page sends `Access-Control-Allow-Origin: *`. It's not a real risk right now because the pages are public, but it isn't needed and could become a problem if a logged-in page is ever added under the same settings.
+
+### SEC-04: Forms could leak data into the URL
+The contact and application forms have no `action` and default to `method="get"`. If someone submits before the page's JavaScript has loaded (on a slow connection, say), the browser does a normal GET submit. That puts their name, email, phone, and address in the URL, which then ends up in browser history and server logs. Setting `method="post"`, or disabling the button until the page is ready, prevents it.
+
+---
+
+## Info
+
+### PERF-02: JavaScript size
+The homepage loads 16 JavaScript files, about 217 KB uncompressed. That's fine, but animation code for sections further down could be lazy-loaded.
+
+### PERF-03: Slow uncached pages
+When the cache was cold, `/blog` took 1.64 s and `/careers` took 1.43 s, against 0.27 s for the cached homepage. Incremental static regeneration would help.
+
+### SEC-05: No security.txt
+There's no `/.well-known/security.txt`, so someone who finds a vulnerability has no obvious way to report it.
